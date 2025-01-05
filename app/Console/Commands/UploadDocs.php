@@ -3,28 +3,22 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use OpenAI\Laravel\Facades\OpenAI;
+use Illuminate\Support\Facades\Storage;
 
 class UploadDocs extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'app:upload-docs';
+    protected $signature = 'app:upload-filament-docs';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Command description';
+    protected $description = 'Uploads the Filament docs to OpenAI';
 
-    /**
-     * Execute the console command.
-     */
     public function handle()
     {
-        //
+        $uploadedFile = OpenAI::files()->upload([
+            'file' => Storage::disk('local')->readStream('full-filament-docs.md'),
+            'purpose' => 'assistants',
+        ]);
+
+        $this->info('File ID: ' . $uploadedFile->id);
     }
 }
